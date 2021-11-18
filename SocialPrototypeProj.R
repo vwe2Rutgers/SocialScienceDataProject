@@ -7,23 +7,22 @@ library(dplyr)
 library(tidytext)
 
 
-creds <- read_json("creds.json") 
+Spotifycreds <- read_json("SpotifyCreds.json") 
 
-Sys.setenv(SPOTIFY_CLIENT_ID = creds$id)
-Sys.setenv(SPOTIFY_CLIENT_SECRET = creds$secret)
+Sys.setenv(SPOTIFY_CLIENT_ID = Spotifycreds$id)
+Sys.setenv(SPOTIFY_CLIENT_SECRET = Spotifycreds$secret)
 
-access_token <- get_spotify_access_token()
-
-
+Spotifyaccess_token <- get_spotify_access_token()
 
 
 
 
+Geniuscreds <- read_json("GeniusCreds.json") 
+
+genius_token(force = TRUE)
 
 
-
-
-
+get_song(song_id = 90479)
 
 
 
