@@ -13,14 +13,18 @@ library(rvest)
 library(stringr)
 library(magrittr)
 library(reshape2)
+library(parallel)
 
-creds <- read_json("SpotifyCreds.json") # read creds
 
-Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) # set creds
+#Spotify Creds
+creds <- read_json("SpotifyCreds.json") 
+
+Sys.setenv(SPOTIFY_CLIENT_ID = creds$id) 
 Sys.setenv(SPOTIFY_CLIENT_SECRET = creds$secret)
 
-access_token <- get_spotify_access_token()
+access_token <- get_spotify_access_token
 
+#genius Creds
 genius_token <- function(force = FALSE)
 {
 env <- Sys.setenv('kYKnu6jb5qu0ZEEcuA1jsvKVSbw45fgAH00ct-HcIVbziF3Hl9slWHmyESTiN1Eo') #replace with your own Genius token
@@ -45,40 +49,49 @@ Sys.setenv(GENIUS_API_TOKEN = pat)
 pat
 }
 
-
-artists1 <- get_genre_artists(genre = "country")
-artists_names <- artists1 %>% select(name)
-
+#Making a list of names to pass through the genius search function
+artists <- get_genre_artists(genre = "country")
+Nombres <- artists$name %>% as_tibble()
 
 #Trying to make a list of artists and their IDs
-for (n in artists_names) {
-  t <- search_artist(n)
-  ids <- t$artists_id
-  r <- t$artist_name
-  
+A <- tibble()
+t <- character()
+ids <- character()
+N <- character()
+
+for (z in 1:nrow(Nombres)) {
+  t <- rbind(t, search_artist(Nombres[z,]))
+ ids <- t$artist_id
+ N <- t$artist_name
 }
-# I keep getting the error: "Error in vapply(elements, encode, character(1)) : 
-#values must be length 1,
-#but FUN(X[[1]]) result is length 20"
-#Not exactly sure how to fix it, I've tried making the artists variable a data frame, list, and even a tibble.
 
 #code to make those id's into a list of tracks 
-for (i in ids) {
-  songs <- get_artist_songs_df(i)
-  lyrics_urls <- songs$song_lyrics_url %>% as.data.frame()
-  
-  
-  
+songs <- tibble()
+
+for (i in seq_along(ids)) {
+
+  lyrics_urls <- songs$song_lyrics_url
+  songs <- rbind(songs, get_artist_songs_df(ids[i]))
 }
 
+#Gathering Lyrics
+lyrics <- tibble()
 
-#example code to check stuff out 
-MW <- search_artist("Morgan Wallen")
-tracks <- get_artist_songs_df(artist_id = MW$artist_id)
-lyrics_urls <- tracks$song_lyrics_url %>% as.data.frame()
-
-for (l in lyrics_urls) {
-  L <- geniusr::get_lyrics_url(l)
+#Having trouble collecting all the lyrics in one shot, seems as though either my laptop can't handle it, or the server is too slow.
+for (l in seq_along(lyrics_urls)) {
+  lyrics <- rbind(lyrics, get_lyrics_url(lyrics_urls[l]))
   
 }
+#Attempt at making a more efficient method of getting the lyrics.
+sapply(lyrics_urls, get_lyrics_url)
+
+#I am going to attempt to parallelize it and see if that changes anything
+{numCores <- detectCores()
+  cl <- makeCluster(numCores)
+  clusterEvalQ(cl, library(geniusr))
+  saver <- parSapply(cl, lyrics_urls, get_lyrics_url)
+  stopCluster(cl)}
+
+#it worked, but it got me an empty matrix of lyric values. I'm not quite sure what caused that. 
+
 
