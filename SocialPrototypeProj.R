@@ -37,6 +37,15 @@ genius_token <- function(force = FALSE)
   pat <- readline(": ")
   
   if (identical(pat, "")) {
+    stop("Genius API key entry failed", call. = FALSE)
+  }
+  
+  message("Updating GENIUS_API_TOKEN env var to PAT")
+  Sys.setenv(GENIUS_API_TOKEN = pat)
+  
+  pat
+}
+genius_lyrics(artist = "Margaret Glaspy", song = "Memory Street")
 
 
 get_song(song_id = 90479)
