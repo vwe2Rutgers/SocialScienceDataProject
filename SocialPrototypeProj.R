@@ -6,9 +6,8 @@ library(dplyr)
 library(tidytext)
 library(RedditExtractoR)
 library(SentimentalAnalysis)
-library(redditr)
 library(devtools)
-
+library(pushshiftR)
 
 #write.csv(EdmSet,"C:/Users/Vineet Ekka/Desktop/Edmset.csv")
 
@@ -30,6 +29,18 @@ comments <- com$comment
 
 
 
+edmGO<-getPushshiftData(postType = "comment",
+                           size = 100,
+                           after = "1637841600",
+                           subreddit = "electronicmusic",
+                           nest_level = 1)
+
+
+EDMGO <-getPushshiftData(postType = "comment",
+                          size = 100,
+                          after = "1546300800",
+                          subreddit = "EDM",
+                          nest_level = 1)
 
 
 
