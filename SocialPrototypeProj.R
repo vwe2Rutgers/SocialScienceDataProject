@@ -9,20 +9,29 @@ library(SentimentalAnalysis)
 library(devtools)
 library(pushshiftR)
 
-#write.csv(EdmSet,"C:/Users/Vineet Ekka/Desktop/Edmset.csv")
-
-#RedditExtractoR::get_thread_content()
-
-#RedditExtractoR::find_thread_urls("EDM")
-
 
 
 edm <- find_thread_urls(sort_by = "top",subreddit = "Electronic Music",period = "week")
-urls <-edm$url[[5]]
+
+edmMax <-edm %>%group_by(comments)%>% head(5)
+
+urlo <-edmMax$url[[5]]
+
+edmTrial <- get_thread_content(urlo)
+
+edmTrial2 <-get_thread_content("https://www.reddit.com/r/Music/comments/r8te6k/songs_that_bands_played_live_before_they_were/")
+
+write.csv(edmTrial2,"C:/Users/HP/Downloads/edmTrial4.csv")
+
+
+urls <- edm$url[[8]]
 edmCom <- get_thread_content(urls)
 
 com<-edm$comments
 comments <- com$comment
+
+
+
 
 
 
