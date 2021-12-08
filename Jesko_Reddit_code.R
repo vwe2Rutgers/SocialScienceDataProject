@@ -23,7 +23,8 @@ rap <- getPushshiftData(postType = "comment",
                  after = "1637841600",
                  subreddit = "rap",
                  nest_level = 1)
-rap <- rap$body %>% as_tibble()
+rap <- rap %>% select(subreddit, body)
+
 
 EDM <- getPushshiftData(postType = "comment",
                                    size = 1000,
@@ -31,35 +32,46 @@ EDM <- getPushshiftData(postType = "comment",
                                    subreddit = "electronicmusic",
                                    nest_level = 1)
 
-EDM <- EDM$body %>% as_tibble()
+EDM <- EDM %>% select(subreddit, body)
+
 
 country <- getPushshiftData(postType = "comment",
                                    size = 1000,
                                    after = "1637841600",
                                    subreddit = "country",
                                    nest_level = 1)
-country <- country$body %>% as_tibble()
 
-data <- cbind(rap, EDM, country)
 
-colnames(data) <- c("Rap", "EDM", "Country")
+country <- country %>% select(subreddit, body)
+
+
+data <- rbind(rap, EDM, country)
 
 
 write.csv(data, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\data.csv")
 
 data <- data %>% 
-  distinct(rap, .keep_all =TRUE) %>% 
-  distinct(country, .keep_all = TRUE) %>% 
-  distinct(EDM, .keep_all = TRUE)
+  mutate(body = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", body)) %>% # Removing hashtags and mentions
+  mutate(body = gsub("(http[^ ]*)|(www.[^ ]*)", "", body)) %>% # Removing URLs
+  distinct(body, .keep_all =TRUE)
 
-worddd <- tibble(line = 1:100, text = data)
-words <- worddd %>% unnest_tokens(word, text)
+words <- data %>% unnest_tokens(word, body)
 
-words %>% count(data, sort = TRUE) %>%
+
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+words.2 <- words %>% anti_join(stop_words)
+
+words.2 %>% count(word, sort = TRUE) %>%
   slice(1:10) %>%
   mutate(word = reorder(word, n)) %>%
   ggplot(aes(n, word)) + geom_col() +
   labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in corpus"))
 
+top_terms <- 
+  words.2 %>%
+  group_by(subreddit) %>% 
+  top_n(10, n) %>%
+  ungroup() %>%
+  arrange(word, -n)
 
-unnest_tokens()
