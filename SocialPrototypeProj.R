@@ -6,6 +6,8 @@ library(dplyr)
 library(tidytext)
 library(RedditExtractoR)
 library(SentimentalAnalysis)
+library(SnowballC)
+library(ggplot2)
 
 library(devtools)
 library(pushshiftR)
@@ -24,19 +26,6 @@ edmTrial2 <-get_thread_content("https://www.reddit.com/r/Music/comments/r8te6k/s
 
 write.csv(edmTrial2,"C:/Users/HP/Downloads/edmTrial4.csv")
 
-sentiment <- analyzeSentiment(edmTrial2cs$comments.comment)
-
-
-
-
-
-
-
-urls <- edm$url[[8]]
-edmCom <- get_thread_content(urls)
-
-com<-edm$comments
-comments <- com$comment
 
 
 
@@ -48,18 +37,80 @@ comments <- com$comment
 
 
 
-edmGO<-getPushshiftData(postType = "comment",
-                           size = 100,
-                           after = "1637841600",
-                           subreddit = "electronicmusic",
-                           nest_level = 1)
 
 
-EDMGO <-getPushshiftData(postType = "comment",
-                          size = 100,
-                          after = "1546300800",
-                          subreddit = "EDM",
-                          nest_level = 1)
+rap <- getPushshiftData(postType = "comment",
+                        size = 1000,
+                        after = "1637841600",
+                        subreddit = "rap",
+                        nest_level = 1)
+rap <- rap$body %>% as_tibble()
+
+EDM <- getPushshiftData(postType = "comment",
+                        size = 1000,
+                        after = "1637841600",
+                        subreddit = "electronicmusic",
+                        nest_level = 1)
+
+EDM <- EDM$body %>% as_tibble()
+
+country <- getPushshiftData(postType = "comment",
+                            size = 1000,
+                            after = "1637841600",
+                            subreddit = "country",
+                            nest_level = 1)
+country <- country$body %>% as_tibble()
+
+data <- cbind(rap, EDM, country)
+
+colnames(data) <- c("Rap", "EDM", "Country")
+
+
+
+
+
+sentimentRap <-analyzeSentiment(rap$value)
+
+sentimentEDM <-analyzeSentiment(EDM$value)
+
+sentimentCountry <-analyzeSentiment(country$value)
+
+sentimentMusic <-analyzeSentiment(edmTrial2cs$comments.comment)
+
+
+
+
+
+Rapcount <- countWords(rap$value,removeStopwords = FALSE)
+Rapdataset <- bind_cols(rap,sentimentRap,Rapcount)
+
+ggplot(Rapdataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Rap Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+EDMcount <- countWords(EDM$value,removeStopwords = FALSE)
+EDMdataset <- bind_cols(EDM,sentimentEDM,EDMcount)
+
+ggplot(EDMdataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample EDM Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+Countrycount <- countWords(country$value,removeStopwords = FALSE)
+Countrydataset <- bind_cols(country,sentimentCountry,Countrycount)
+
+ggplot(Countrydataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Country Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+
+
+
+
 
 
 
