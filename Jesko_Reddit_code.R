@@ -68,10 +68,5 @@ words.2 %>% count(word, sort = TRUE) %>%
   ggplot(aes(n, word)) + geom_col() +
   labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in corpus"))
 
-top_terms <- 
-  words.2 %>%
-  group_by(subreddit) %>% 
-  top_n(10, n) %>%
-  ungroup() %>%
-  arrange(word, -n)
+top.terms <- words.2 %>% group_by(subreddit) %>% count(word, sort = TRUE) %>% top_n(10, n)
 
