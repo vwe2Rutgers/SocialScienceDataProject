@@ -6,6 +6,7 @@ library(dplyr)
 library(tidytext)
 library(RedditExtractoR)
 library(SentimentalAnalysis)
+
 library(devtools)
 library(pushshiftR)
 
@@ -23,12 +24,21 @@ edmTrial2 <-get_thread_content("https://www.reddit.com/r/Music/comments/r8te6k/s
 
 write.csv(edmTrial2,"C:/Users/HP/Downloads/edmTrial4.csv")
 
+sentiment <- analyzeSentiment(edmTrial2cs$comments.comment)
+
+
+
+
+
+
 
 urls <- edm$url[[8]]
 edmCom <- get_thread_content(urls)
 
 com<-edm$comments
 comments <- com$comment
+
+
 
 
 
