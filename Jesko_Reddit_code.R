@@ -5,19 +5,18 @@ library(RedditExtractoR)
 library(tidyverse)
 library(devtools)
 library(pushshiftR)
+library(knitr)
+library(stringr)
+library(tidytext)
+library(word2vec)
+library(stm)
+library(ggplot2)
+library(viridis)
+library(parallel)
+library(reshape2)
+library(magrittr)
 
-# hhop <-get_reddit(subreddit = "hiphop", page_threshold = 3, sort_by = "comments")
-# install.packages("sentimentanalysis")
-# red <- find_thread_urls(subreddit = "hiphop")
-# urls <- as_tibble(red$url)
-# rap <- get_thread_content(urls)
-# com <- rap$comments
-# comments <- com$comment
-#get rid of mod and auto mod comments
-# 
-# Urls <- sapply(urls, get_thread_content)
-# as.data.frame(Urls)
-# class(Urls)
+#Gathering Reddit comments to build text corpora
 
 rap <- getPushshiftData(postType = "comment",
                  size = 1000,
@@ -48,4 +47,19 @@ colnames(data) <- c("Rap", "EDM", "Country")
 
 write.csv(data, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\data.csv")
 
+data <- data %>% 
+  distinct(rap, .keep_all =TRUE) %>% 
+  distinct(country, .keep_all = TRUE) %>% 
+  distinct(EDM, .keep_all = TRUE)
 
+worddd <- tibble(line = 1:100, text = data)
+words <- worddd %>% unnest_tokens(word, text)
+
+words %>% count(data, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in corpus"))
+
+
+unnest_tokens()
