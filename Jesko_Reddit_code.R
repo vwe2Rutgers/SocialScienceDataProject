@@ -36,8 +36,10 @@ edm.thread.contents <- lapply(urlo, get_thread_content)
 #looping over thread.contents to filter out comments
 EDM_comments <- tibble()
 for (n in 1:length(edm.thread.contents)) {
-  EDM_comments <- rbind(comments, edm.thread.contents[[n]][[2]])
+  EDM_comments <- rbind(EDM_comments, edm.thread.contents[[n]][[2]])
 }
+#Making a subreddit name column so I can group by it
+EDM_comments <- cbind(SubReddit = rep("EDM"), EDM_comments)
 
 write.csv(EDM_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\EDM_comments.csv")
 ```
@@ -58,6 +60,8 @@ rap_comments <- tibble()
 for (n in 1:length(thread.contents.1)) {
   rap_comments <- rbind(rap_comments, thread.contents.1[[n]][[2]])
 }
+#Making a subreddit name column so I can group by it
+rap_comments <- cbind(SubReddit = rep("Rap"), rap_comments)
 
 write.csv(rap_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rap_comments.csv")
 ```
@@ -79,6 +83,8 @@ country_comments <- tibble()
 for (n in 1:length(thread.contents.2)) {
   country_comments <- rbind(country_comments, thread.contents.2[[n]][[2]])
 }
+#Making a subreddit name column so I can group by it 
+country_comments <- cbind(SubReddit = rep("Country"), country_comments)
 
 write.csv(country_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\country_comments.csv")
 
