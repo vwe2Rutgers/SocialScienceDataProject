@@ -69,24 +69,24 @@ write.csv(rap_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataP
 
 Now doing it for the country subreddit.
 ```{r Gathering Country Comments}
-country <- find_thread_urls(sort_by = "top", subreddit = "country", period = "year")
+rock <- find_thread_urls(sort_by = "top", subreddit = "metal", period = "year")
 #filtering out inactive posts
-countryMax <-country %>% filter(comments > 10)
+rockMax <-rock %>% filter(comments > 10)
 #checkin number of comments
-countrysum <- countryMax %>% group_by(date_utc) %>% summarize(c.sum = sum(comments))
+rocksum <- rockMax %>% summarize(c.sum = sum(comments))
 #Getting all the URLs
-urlo.2 <-countryMax$url %>% as.list()
+urlo.2 <-rockMax$url %>% as.list()
 #Gathering thread contents 
 thread.contents.2 <- lapply(urlo.2, get_thread_content)
 #looping over thread.contents to filter out comments and metadata
-country_comments <- tibble()
+rock_comments <- tibble()
 for (n in 1:length(thread.contents.2)) {
-  country_comments <- rbind(country_comments, thread.contents.2[[n]][[2]])
+  rock_comments <- rbind(rock_comments, thread.contents.2[[n]][[2]])
 }
 #Making a subreddit name column so I can group by it 
-country_comments <- cbind(SubReddit = rep("Country"), country_comments)
+rock_comments <- cbind(SubReddit = rep("Metal"), rock_comments)
 
-write.csv(country_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\country_comments.csv")
+write.csv(rock_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rock_comments.csv")
 
 ```
 
