@@ -2,6 +2,7 @@
 library(jsonlite)
 library(rmarkdown)
 library(httr)
+library(readr)
 library(RedditExtractoR)
 library(tidyverse)
 library(jsonlite)
@@ -20,6 +21,7 @@ library(viridis)
 library(parallel)
 library(reshape2)
 library(magrittr)
+library(SentimentAnalysis)
 ```
 
 #Gathering Reddit comments to build text corpora
@@ -93,13 +95,26 @@ write.csv(rock_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceData
 
 code for later
 ```{r NLP Code for Later}
-# data <- data %>% 
-#   mutate(body = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", body)) %>% # Removing hashtags and mentions
-#   mutate(body = gsub("(http[^ ]*)|(www.[^ ]*)", "", body)) %>% # Removing URLs
-#   distinct(body, .keep_all =TRUE)
-# 
-# words <- data %>% unnest_tokens(word, body)
-# 
+
+rap_comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rap_comments.csv", quote = "\"")
+EDM_Comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\EDM_comments.csv", quote = "\"")
+
+#Making comments utf-8 compliant by filtering out non alphanumeric values
+comments1 <- EDM_Comments %>% mutate(comment = str_replace_all(EDM_Comments$comment, "[^[:alnum:]]", " "))
+
+
+comments2 <- rap_comments %>% mutate(comment = str_replace_all(rap_comments$comment, "[^[:alnum:]]", " "))
+
+zz <- SentimentAnalysis::countWords(comments1$comment)
+
+
+data <- comments1 %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words <- data %>% unnest_tokens(word, comment)
+
 # 
 # data(stop_words) 
 # stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
