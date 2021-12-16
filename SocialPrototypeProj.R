@@ -108,6 +108,15 @@ ggplot(Countrydataset,aes(x=SentimentGI)) +
 
 
 
+Rapdataset$value <-"Rap"
+
+Countrydataset$value <- "Country"
+
+EDMdataset$value <- "EDM"
+
+all_genres <-bind_rows(Rapdataset,Countrydataset,EDMdataset)
+
+
 
 
 

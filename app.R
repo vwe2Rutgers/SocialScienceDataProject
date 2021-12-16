@@ -13,19 +13,18 @@ ui <- fluidPage(
     
     # Sidebar with a slider input
     sidebarPanel(
-      selectInput("sel","Genre:",c("All","EDM","Rap","Country","Metal","Indie")),
+      selectInput("sel","Genre:",choices=c("All","EDM","Rap","Country","Metal","Indie")),
       sliderInput("ncount","Count:",5,50,value = c(5),step=5)
     ),
     
     # Show a plot of the generated distribution
     mainPanel(
       textOutput("Genre"),
-      if(selectInput)
       plotOutput("rapsentiment_plot"),
       plotOutput("countrysentiment_plot"),
       plotOutput("EDMsentiment_plot")
       
-      
+  
       
       
     )
@@ -43,9 +42,13 @@ server <- function(input,output){
   )}
   
   
+  
+  
   output$rapsentiment_plot <- renderPlot({
-      ggplot(Rapdataset,aes(x=SentimentGI)) +
-      ggtitle("Sentiment of Sample Rap Subreddit Data") +
+    all_genresplot <- all_genres %>%filter(value==input$sel)
+    
+      ggplot(all_genresplot,aes(x=SentimentGI)) +
+      ggtitle("Sentiment Subreddit Data") +
       geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
   })
   
