@@ -130,37 +130,61 @@ jazz_comments <- jazz_comments %>% mutate(comment = str_replace_all(jazz_comment
 jazz_comments %>% filter(validUTF8(comment) == TRUE)
 
 write.csv(jazz_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\jazz_comments.csv")
- 
-
-
-
-
-
-
 
 ```
 
 code for later
 ```{r NLP Code for Later}
 
-rap_comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rap_comments.csv", quote = "\"")
-EDM_Comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\EDM_comments.csv", quote = "\"")
 
 
-zz <- SentimentAnalysis::countWords(comments1$comment)
+rap_data <- rap_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
 
-# 
-# data <- comments1 %>%
-#   mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
-#   mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
-#   distinct(comment, .keep_all =TRUE)
-# 
-# words <- data %>% unnest_tokens(word, comment)
+words <- rap_data %>% unnest_tokens(word, comment)
 
-# 
-# data(stop_words) 
-# stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
-# words.2 <- words %>% anti_join(stop_words)
+#Cleaning the data and counting the words.
+EDM_data <- EDM_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words1 <- EDM_data %>% unnest_tokens(word, comment)
+
+jazz_data <- jazz_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words2 <- jazz_data %>% unnest_tokens(word, comment)
+
+indie_data <- indie_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words3  <- indie_data %>% unnest_tokens(word, comment)
+
+
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+rap_words <- words %>% anti_join(stop_words)
+
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+EDM_words <- words1 %>% anti_join(stop_words)
+
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+jazz_words <- words2 %>% anti_join(stop_words)
+
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+indie_words <- words3 %>% anti_join(stop_words)
+
+SentimentAnalysis::analyzeSentiment(jazz_words$word)
 # 
 # words.2 %>% count(word, sort = TRUE) %>%
 #   slice(1:10) %>%
