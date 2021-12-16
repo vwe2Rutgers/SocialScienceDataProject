@@ -1,5 +1,5 @@
+library(rsconnect)
 library(shiny)
-library(shinydashboard)
 library(ggplot2)
 
 
@@ -48,7 +48,14 @@ server <- function(input,output){
     if(input$sel=="All"){
       ggplot(all_genres,aes(x=SentimentGI)) +
         ggtitle("Sentiment All Subreddit Data") +
-        geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+        geom_histogram(binwidth = 0.05,color="red",fill="red",alpha=0.5,position = "identity")
+      
+      
+      #ggplot(Countrydataset,aes(x=SentimentGI)) +
+       # geom_histogram(binwidth = 0.05,color="blue",fill="blue",alpha=0.5)
+      
+      
+      
     }
     else{
       all_genresplot <- all_genres %>%filter(value==input$sel)
