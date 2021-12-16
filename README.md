@@ -1,5 +1,5 @@
 # SocialScienceDataProject
-Social Science Data Project on collecting Reddit comments from music subreddits and comparing each other using NLP and setiment analyisis.
+Social Science Data Project on collecting Reddit comments from music subreddits and comparing each other using NLP and sentimental analyisis.
 Authors:Vineet Ekka, Jesskomar Gargot
 
 Branches:
