@@ -43,6 +43,11 @@ for (n in 1:length(edm.thread.contents)) {
 #Making a subreddit name column so I can group by it
 EDM_comments <- cbind(SubReddit = rep("EDM"), EDM_comments)
 
+EDM_comments <- EDM_comments %>% mutate(comment = str_replace_all(EDM_comments$comment, "[^[:alnum:]]", " "))
+
+EDM_comments <- EDM_comments %>% filter(validUTF8(comment) == TRUE)
+
+
 write.csv(EDM_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\EDM_comments.csv")
 ```
 
@@ -65,33 +70,75 @@ for (n in 1:length(thread.contents.1)) {
 #Making a subreddit name column so I can group by it
 rap_comments <- cbind(SubReddit = rep("Rap"), rap_comments)
 
+rap_comments <- rap_comments %>% mutate(comment = str_replace_all(rap_comments$comment, "[^[:alnum:]]", " "))
+
+rap_comments <- rap_comments %>% filter(validUTF8(comment) == TRUE)
+
 write.csv(rap_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rap_comments.csv")
 ```
 
 
-Now doing it for the country subreddit.
+Now doing it for the indie subreddit.
 ```{r Gathering Country Comments}
-rock <- find_thread_urls(sort_by = "top", subreddit = "metal", period = "year")
+indie <- find_thread_urls(sort_by = "top", subreddit = "indie", period = "all")
 #filtering out inactive posts
-rockMax <-rock %>% filter(comments > 10)
+indieMax <-indie %>% filter(comments > 10)
 #checkin number of comments
-rocksum <- rockMax %>% summarize(c.sum = sum(comments))
+indiesum <- indieMax %>% summarize(c.sum = sum(comments))
 #Getting all the URLs
-urlo.2 <-rockMax$url %>% as.list()
+urlo.2 <-indieMax$url %>% as.list()
 #Gathering thread contents 
 thread.contents.2 <- lapply(urlo.2, get_thread_content)
 #looping over thread.contents to filter out comments and metadata
-rock_comments <- tibble()
+indie_comments <- tibble()
 for (n in 1:length(thread.contents.2)) {
-  rock_comments <- rbind(rock_comments, thread.contents.2[[n]][[2]])
+  indie_comments <- rbind(indie_comments, thread.contents.2[[n]][[2]])
 }
 #Making a subreddit name column so I can group by it 
-rock_comments <- cbind(SubReddit = rep("Metal"), rock_comments)
+indie_comments <- cbind(SubReddit = rep("Indie"), indie_comments)
 
-write.csv(rock_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rock_comments.csv")
+indie_comments <- indie_comments %>% mutate(comment = str_replace_all(indie_comments$comment, "[^[:alnum:]]", " "))
+
+indie_comments %>% filter(validUTF8(comment) == TRUE)
+indie_comments <- indie_comments %>% filter(comment != "deleted")
+
+write.csv(indie_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\indie_comments.csv")
 
 ```
 
+Doing it for the jazz subreddit
+```{r}
+jazz <- find_thread_urls(sort_by = "top", subreddit = "jazz", period = "year")
+#filtering out inactive posts
+jazzMax <-jazz %>% filter(comments > 10)
+#checkin number of comments
+jazzsum <- jazzMax %>% summarize(c.sum = sum(comments))
+#Getting all the URLs
+urlo.3 <-jazzMax$url %>% as.list()
+#Gathering thread contents 
+thread.contents.3 <- lapply(urlo.3, get_thread_content)
+#looping over thread.contents to filter out comments and metadata
+jazz_comments <- tibble()
+for (n in 1:length(thread.contents.3)) {
+  jazz_comments <- rbind(jazz_comments, thread.contents.3[[n]][[2]])
+}
+#Making a subreddit name column so I can group by it 
+jazz_comments <- cbind(SubReddit = rep("jazz"), jazz_comments)
+
+jazz_comments <- jazz_comments %>% mutate(comment = str_replace_all(jazz_comments$comment, "[^[:alnum:]]", " "))
+
+jazz_comments %>% filter(validUTF8(comment) == TRUE)
+
+write.csv(jazz_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\jazz_comments.csv")
+ 
+
+
+
+
+
+
+
+```
 
 code for later
 ```{r NLP Code for Later}
@@ -99,21 +146,16 @@ code for later
 rap_comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\rap_comments.csv", quote = "\"")
 EDM_Comments <- read_csv("C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataProject\\EDM_comments.csv", quote = "\"")
 
-#Making comments utf-8 compliant by filtering out non alphanumeric values
-comments1 <- EDM_Comments %>% mutate(comment = str_replace_all(EDM_Comments$comment, "[^[:alnum:]]", " "))
-
-
-comments2 <- rap_comments %>% mutate(comment = str_replace_all(rap_comments$comment, "[^[:alnum:]]", " "))
 
 zz <- SentimentAnalysis::countWords(comments1$comment)
 
-
-data <- comments1 %>%
-  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
-  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
-  distinct(comment, .keep_all =TRUE)
-
-words <- data %>% unnest_tokens(word, comment)
+# 
+# data <- comments1 %>%
+#   mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+#   mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+#   distinct(comment, .keep_all =TRUE)
+# 
+# words <- data %>% unnest_tokens(word, comment)
 
 # 
 # data(stop_words) 
