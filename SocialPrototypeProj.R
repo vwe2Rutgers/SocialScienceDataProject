@@ -101,8 +101,8 @@ ggplot(EDMdataset,aes(x=SentimentGI)) +
 Countrycount <- countWords(country$value,removeStopwords = FALSE)
 Countrydataset <- bind_cols(country,sentimentCountry,Countrycount)
 
-ggplot(Countrydataset,aes(x=SentimentGI)) +
-  ggtitle("Sentiment of Sample Country Subreddit Data") +
+ggplot(all_genres,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Subreddit Data") +
   geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
 
 

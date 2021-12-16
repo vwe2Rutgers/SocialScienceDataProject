@@ -20,9 +20,8 @@ ui <- fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       textOutput("Genre"),
-      plotOutput("rapsentiment_plot"),
-      plotOutput("countrysentiment_plot"),
-      plotOutput("EDMsentiment_plot")
+      plotOutput("sentiment_plot"),
+      
       
   
       
@@ -44,12 +43,21 @@ server <- function(input,output){
   
   
   
-  output$rapsentiment_plot <- renderPlot({
-    all_genresplot <- all_genres %>%filter(value==input$sel)
+  output$sentiment_plot <- renderPlot({
     
-      ggplot(all_genresplot,aes(x=SentimentGI)) +
-      ggtitle("Sentiment Subreddit Data") +
-      geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+    if(input$sel=="All"){
+      ggplot(all_genres,aes(x=SentimentGI)) +
+        ggtitle("Sentiment All Subreddit Data") +
+        geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+    }
+    else{
+      all_genresplot <- all_genres %>%filter(value==input$sel)
+      
+       ggplot(all_genresplot,aes(x=SentimentGI)) +
+       ggtitle("Sentiment Subreddit Data") +
+       geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+      
+    }
   })
   
   
