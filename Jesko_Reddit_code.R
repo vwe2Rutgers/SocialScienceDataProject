@@ -79,7 +79,7 @@ write.csv(rap_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDataP
 
 
 Now doing it for the indie subreddit.
-```{r Gathering Country Comments}
+```{r Gathering indie Comments}
 indie <- find_thread_urls(sort_by = "top", subreddit = "indie", period = "all")
 #filtering out inactive posts
 indieMax <-indie %>% filter(comments > 10)
@@ -107,7 +107,7 @@ write.csv(indie_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceDat
 ```
 
 Doing it for the jazz subreddit
-```{r}
+```{r Jazz Code}
 jazz <- find_thread_urls(sort_by = "top", subreddit = "jazz", period = "year")
 #filtering out inactive posts
 jazzMax <-jazz %>% filter(comments > 10)
@@ -134,7 +134,7 @@ write.csv(jazz_comments, "C:\\Users\\jesko\\Documents\\GitHub\\SocialScienceData
 ```
 
 code for later
-```{r NLP Code for Later}
+```{r NLP Code}
 
 
 
@@ -169,28 +169,49 @@ words3  <- indie_data %>% unnest_tokens(word, comment)
 
 
 data(stop_words) 
-stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
+stop_words <- stop_words %>% filter(lexicon == "snowball")
+#getting rid of the single letters left by contractions
+stop_words <- stop_words %>% rbind("m")
+stop_words <- stop_words %>% rbind("s") 
+stop_words <- stop_words %>% rbind("t")
+
+#Removing stop words from each data set
 rap_words <- words %>% anti_join(stop_words)
-
-data(stop_words) 
-stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
 EDM_words <- words1 %>% anti_join(stop_words)
-
-data(stop_words) 
-stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
 jazz_words <- words2 %>% anti_join(stop_words)
-
-data(stop_words) 
-stop_words <- stop_words %>% filter(lexicon == "snowball") # specifying snowball stopword lexicon
 indie_words <- words3 %>% anti_join(stop_words)
 
-SentimentAnalysis::analyzeSentiment(jazz_words$word)
-# 
-# words.2 %>% count(word, sort = TRUE) %>%
-#   slice(1:10) %>%
-#   mutate(word = reorder(word, n)) %>%
-#   ggplot(aes(n, word)) + geom_col() +
-#   labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in corpus"))
-# 
-# top.terms <- words.2 %>% group_by(subreddit) %>% count(word, sort = TRUE) %>% top_n(10, n)
-# 
+#getting top terms for every subreddit
+top.terms <- rap_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- EDM_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- jazz_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- indie_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+
+
+
+#graphing top terms for every subreddit
+rap_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in rap corpus"))
+
+EDM_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in EDM corpus"))
+
+jazz_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in jazz corpus"))
+
+indie_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in indie corpus"))
+
+
