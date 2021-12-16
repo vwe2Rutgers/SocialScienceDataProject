@@ -5,12 +5,10 @@ library(geniusr)
 library(dplyr)
 library(tidytext)
 library(RedditExtractoR)
-library(SentimentalAnalysis)
+library(SentimentAnalysis)
 library(SnowballC)
 library(ggplot2)
-
-library(devtools)
-library(pushshiftR)
+library(readr)
 
 
 
@@ -39,27 +37,6 @@ write.csv(edmTrial2,"C:/Users/HP/Downloads/edmTrial4.csv")
 
 
 
-rap <- getPushshiftData(postType = "comment",
-                        size = 1000,
-                        after = "1637841600",
-                        subreddit = "rap",
-                        nest_level = 1)
-rap <- rap$body %>% as_tibble()
-
-EDM <- getPushshiftData(postType = "comment",
-                        size = 1000,
-                        after = "1637841600",
-                        subreddit = "electronicmusic",
-                        nest_level = 1)
-
-EDM <- EDM$body %>% as_tibble()
-
-country <- getPushshiftData(postType = "comment",
-                            size = 1000,
-                            after = "1637841600",
-                            subreddit = "country",
-                            nest_level = 1)
-country <- country$body %>% as_tibble()
 
 data <- cbind(rap, EDM, country)
 
@@ -118,7 +95,64 @@ all_genres <-bind_rows(Rapdataset,Countrydataset,EDMdataset)
 
 
 
+jazz_comments <- read.csv("C:/Users/HP/Downloads/jazz_comments.csv")
 
+indie_comments <- read.csv("C:/Users/HP/Downloads/indie_comments.csv")
+
+edm_comments < -read.csv("C:/Users/HP/Downloads/edm_comments.csv")
+
+
+N <-30000
+
+
+rap_comments <- read.csv("C:/Users/HP/Downloads/rap_comments.csv")
+
+rap_commentsSub <-sample_n(rap_comments,N)
+
+
+
+
+
+
+sentimentRap <-analyzeSentiment(rap_commentsSub$comment)
+Rapcount <- countWords(rap_commentsSub$comment,removeStopwords = TRUE)
+Rapdataset <-bind_cols(rap_commentsSub$SubReddit,sentimentRap,Rapcount)
+ggplot(Rapdataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Rap Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+sentimentJazz <-analyzeSentiment(jazz_comments$comment)
+Jazzcount <- countWords(jazz_comments$comment,removeStopwords = TRUE)
+
+jazzdataset <- bind_cols(jazz_comments$SubReddit,sentimentJazz,Jazzcount)
+ggplot(jazzdataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Jazz Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+sentimentIndie <-analyzeSentiment(indie_comments$comment)
+Indiecount <- countWords(indie_comments$comment,removeStopwords = TRUE)
+Indiedataset <- bind_cols(indie_comments$SubReddit,sentimentIndie,Indiecount)
+ggplot(Indiedataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample Indie Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+
+sentimentEDM  <-analyzeSentiment(edm_comments$comment)
+EDMcount <- countWords(edm_comments$comment,removeStopwords = TRUE)
+EDMdataset <- bind_cols(edm_comments$SubReddit,sentimentEDM,EDMcount)
+ggplot(EDMdataset,aes(x=SentimentGI)) +
+  ggtitle("Sentiment of Sample EDM Subreddit Data") +
+  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
+
+all_genres <-bind_rows(Rapdataset,jazzdataset,EDMdataset,Indiedataset)
 
 
 

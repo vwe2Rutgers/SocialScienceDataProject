@@ -13,7 +13,7 @@ ui <- fluidPage(
     
     # Sidebar with a slider input
     sidebarPanel(
-      selectInput("sel","Genre:",choices=c("All","EDM","Rap","Country","Metal","Indie")),
+      selectInput("sel","Genre:",choices=c("All","EDM","Rap","Indie","jazz")),
       sliderInput("ncount","Count:",5,50,value = c(5),step=5)
     ),
     
@@ -58,7 +58,7 @@ server <- function(input,output){
       
     }
     else{
-      all_genresplot <- all_genres %>%filter(value==input$sel)
+      all_genresplot <- all_genres %>%filter(...1==input$sel)
       
        ggplot(all_genresplot,aes(x=SentimentGI)) +
        ggtitle("Sentiment Subreddit Data") +
