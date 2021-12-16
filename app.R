@@ -3,8 +3,6 @@ library(shinydashboard)
 library(ggplot2)
 
 
-#ui <- dashboardPage()
-
 
 ui <- fluidPage(
   
@@ -22,8 +20,10 @@ ui <- fluidPage(
     # Show a plot of the generated distribution
     mainPanel(
       textOutput("Genre"),
-      
-      plotOutput("sentiment_plot")
+      if(selectInput)
+      plotOutput("rapsentiment_plot"),
+      plotOutput("countrysentiment_plot"),
+      plotOutput("EDMsentiment_plot")
       
       
       
@@ -43,13 +43,11 @@ server <- function(input,output){
   )}
   
   
-  output$sentiment_plot <- renderPlot({
+  output$rapsentiment_plot <- renderPlot({
       ggplot(Rapdataset,aes(x=SentimentGI)) +
       ggtitle("Sentiment of Sample Rap Subreddit Data") +
       geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
-  }
-    
-  )
+  })
   
   
   
