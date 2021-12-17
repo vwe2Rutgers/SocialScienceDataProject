@@ -77,7 +77,7 @@ server <- function(input,output){
     }
     
     else{
-      
+      #sentiment comments
       all_genresCommentsFilter <- all_genresComments %>% filter(SubReddit...2==input$sel)
       plotSentimentResponse(all_genresCommentsFilter$SentimentGI,all_genresCommentsFilter$score...6,ylab = "Comment Score", smoothing = "lm")
       

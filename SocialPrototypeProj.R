@@ -186,5 +186,5 @@ all_genresComments <- bind_rows(RapControl2,EDMControl2,IndieControl2,JazzContro
 plotSentimentResponse(all_genresComments$SentimentGI,all_genresComments$score...6,ylab = "Comment Score", smoothing = "lm")
 
 
-
+#g
 
