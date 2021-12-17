@@ -23,6 +23,11 @@ library(reshape2)
 library(magrittr)
 library(SentimentAnalysis)
 
+jazz_comments <- read.csv("jazz_comments.csv")
+rap_comments <- read.csv("rap_comments.csv")
+edm_comments <- read.csv("EDM_comments.csv")
+indie_comments <- read.csv("indie_comments.csv")
+
 
 
 ui <- fluidPage(
