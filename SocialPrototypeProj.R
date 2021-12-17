@@ -59,9 +59,7 @@ N <-30000
 sentimentRap <-analyzeSentiment(rap_commentsSub$comment)
 Rapcount <- countWords(rap_commentsSub$comment,removeStopwords = TRUE)
 Rapdataset <-bind_cols(rap_commentsSub$SubReddit,sentimentRap,Rapcount)
-ggplot(Rapdataset,aes(x=SentimentGI)) +
-  ggtitle("Sentiment of Sample Rap Subreddit Data") +
-  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
 
 
 
@@ -69,18 +67,16 @@ sentimentJazz <-analyzeSentiment(jazz_comments$comment)
 Jazzcount <- countWords(jazz_comments$comment,removeStopwords = TRUE)
 
 jazzdataset <- bind_cols(jazz_comments$SubReddit,sentimentJazz,Jazzcount)
-ggplot(jazzdataset,aes(x=SentimentGI)) +
-  ggtitle("Sentiment of Sample Jazz Subreddit Data") +
-  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
 
 
 
 sentimentIndie <-analyzeSentiment(indie_comments$comment)
 Indiecount <- countWords(indie_comments$comment,removeStopwords = TRUE)
 Indiedataset <- bind_cols(indie_comments$SubReddit,sentimentIndie,Indiecount)
-ggplot(Indiedataset,aes(x=SentimentGI)) +
-  ggtitle("Sentiment of Sample Indie Subreddit Data") +
-  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
 
 
 
@@ -88,9 +84,8 @@ ggplot(Indiedataset,aes(x=SentimentGI)) +
 sentimentEDM  <-analyzeSentiment(edm_comments$comment)
 EDMcount <- countWords(edm_comments$comment,removeStopwords = TRUE)
 EDMdataset <- bind_cols(edm_comments$SubReddit,sentimentEDM,EDMcount)
-ggplot(EDMdataset,aes(x=SentimentGI)) +
-  ggtitle("Sentiment of Sample EDM Subreddit Data") +
-  geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
+
+
 
 
 
@@ -99,23 +94,23 @@ all_genres <-bind_rows(Rapdataset,jazzdataset,EDMdataset,Indiedataset)
 
 IndieControl <- bind_cols(sentimentIndie,indie_comments)
 
-plotSentimentResponse(IndieControl$SentimentGI,IndieControl$score,ylab = "Comment Score", smoothing = "lm")
+
 
 
 EDMControl <- bind_cols(sentimentEDM,edm_comments)
-plotSentimentResponse(EDMControl$SentimentGI,EDMControl$score,ylab = "Comment Score", smoothing = "lm")
+
 
 
 RapControl <- bind_cols(sentimentRap,rap_commentsSub)
-plotSentimentResponse(RapControl$SentimentGI,RapControl$score,ylab = "Comment Score", smoothing = "lm")
+
 
 
 JazzControl <- bind_cols(sentimentJazz,jazz_comments)
-plotSentimentResponse(JazzControl$SentimentGI,JazzControl$score,ylab = "Comment Score", smoothing = "lm")
+
 
 JazzControl2 <-bind_cols(jazz_comments,JazzControl)
 
-plotSentimentResponse(JazzControl2$SentimentGI,JazzControl2$score...6,ylab = "Comment Score", smoothing = "lm")
+
 
 IndieControl2 <- bind_cols(indie_comments,IndieControl)
 
@@ -125,7 +120,6 @@ EDMControl2 <- bind_cols(edm_comments,EDMControl)
 
 all_genresComments <- bind_rows(RapControl2,EDMControl2,IndieControl2,JazzControl2)
 
-plotSentimentResponse(all_genresComments$SentimentGI,all_genresComments$score...6,ylab = "Comment Score", smoothing = "lm")
 
 
 
@@ -181,38 +175,15 @@ top.terms <- indie_words %>% count(word, sort = TRUE) %>% top_n(10, n)
 
 
 #graphing top terms for every subreddit
-rap_words %>% count(word, sort = TRUE) %>%
-  slice(1:10) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(n, word)) + geom_col() +
-  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in rap corpus"))
-
-EDM_words %>% count(word, sort = TRUE) %>%
-  slice(1:10) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(n, word)) + geom_col() +
-  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in EDM corpus"))
-
-jazz_words %>% count(word, sort = TRUE) %>%
-  slice(1:10) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(n, word)) + geom_col() +
-  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in jazz corpus"))
-
-indie_words %>% count(word, sort = TRUE) %>%
-  slice(1:10) %>%
-  mutate(word = reorder(word, n)) %>%
-  ggplot(aes(n, word)) + geom_col() +
-  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in indie corpus"))
 
 
 
 all_TopComments <- bind_rows(rap_words,EDM_words,jazz_words,indie_words)
 
 
-
-
-
+#write.csv(all_TopComments, "C:/Users/HP/Downloads/all_TopComments.csv")
+#write.csv(all_genres, "C:/Users/HP/Downloads/all_genres.csv")
+#write.csv(all_genresComments, "C:/Users/HP/Downloads/all_genresComments.csv")
 
 
 #g

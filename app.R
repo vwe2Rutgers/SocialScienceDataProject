@@ -22,11 +22,14 @@ library(parallel)
 library(reshape2)
 library(magrittr)
 library(SentimentAnalysis)
-
+#Read Data 
 jazz_comments <- read.csv("jazz_comments.csv")
 rap_comments <- read.csv("rap_comments.csv")
 edm_comments <- read.csv("EDM_comments.csv")
 indie_comments <- read.csv("indie_comments.csv")
+all_genres <- read.csv("all_genres.csv")
+all_genresComments <-read.csv("all_genresComments.csv")
+all_TopComments <- read.csv("all_TopComments.csv")
 
 
 
@@ -63,6 +66,11 @@ ui <- fluidPage(
 
 
 server <- function(input,output){
+  
+ 
+  
+  
+
   
   output$selectGenre <-{(
   renderText(input$sel)
