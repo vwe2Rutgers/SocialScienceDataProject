@@ -1,14 +1,26 @@
+library(jsonlite)
+library(rmarkdown)
+library(httr)
+library(readr)
+library(RedditExtractoR)
 library(tidyverse)
 library(jsonlite)
 library(lubridate)
-library(geniusr)
 library(dplyr)
+library(knitr)
+library(stringr)
 library(tidytext)
-library(RedditExtractoR)
-library(SentimentAnalysis)
-library(SnowballC)
+library(word2vec)
+library(stm)
 library(ggplot2)
-library(readr)
+library(viridis)
+library(parallel)
+library(reshape2)
+library(magrittr)
+library(SentimentAnalysis)
+
+
+
 
 
 
@@ -117,8 +129,85 @@ plotSentimentResponse(all_genresComments$SentimentGI,all_genresComments$score...
 
 
 
+rap_data <- rap_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words <- rap_data %>% unnest_tokens(word, comment)
+
+#Cleaning the data and counting the words.
+EDM_data <- edm_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words1 <- EDM_data %>% unnest_tokens(word, comment)
+
+jazz_data <- jazz_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words2 <- jazz_data %>% unnest_tokens(word, comment)
+
+indie_data <- indie_comments %>%
+  mutate(comment = gsub("#[A-Za-z0-9]+|@[A-Za-z0-9]", "", comment)) %>% # Removing hashtags and mentions
+  mutate(comment = gsub("(http[^ ]*)|(www.[^ ]*)", "", comment)) %>% # Removing URLs
+  distinct(comment, .keep_all =TRUE)
+
+words3  <- indie_data %>% unnest_tokens(word, comment)
 
 
+data(stop_words) 
+stop_words <- stop_words %>% filter(lexicon == "snowball")
+#getting rid of the single letters left by contractions
+stop_words <- stop_words %>% rbind("m")
+stop_words <- stop_words %>% rbind("s") 
+stop_words <- stop_words %>% rbind("t")
+
+#Removing stop words from each data set
+rap_words <- words %>% anti_join(stop_words)
+EDM_words <- words1 %>% anti_join(stop_words)
+jazz_words <- words2 %>% anti_join(stop_words)
+indie_words <- words3 %>% anti_join(stop_words)
+
+#getting top terms for every subreddit
+top.terms <- rap_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- EDM_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- jazz_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+top.terms <- indie_words %>% count(word, sort = TRUE) %>% top_n(10, n)
+
+
+
+#graphing top terms for every subreddit
+rap_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in rap corpus"))
+
+EDM_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in EDM corpus"))
+
+jazz_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in jazz corpus"))
+
+indie_words %>% count(word, sort = TRUE) %>%
+  slice(1:10) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(n, word)) + geom_col() +
+  labs(y = NULL, x='Term frequency', title=paste("10 most frequent terms in indie corpus"))
+
+
+
+all_TopComments <- bind_rows(rap_words,EDM_words,jazz_words,indie_words)
 
 
 

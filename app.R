@@ -14,7 +14,7 @@ ui <- fluidPage(
     # Sidebar with a slider input and selectInput
     sidebarPanel(
       selectInput("sel","Genre:",choices=c("All","EDM","Rap","Indie","jazz")),
-      sliderInput("ncount","Count:",5,100,value = c(5),step=5)
+      sliderInput("ncount","Top Word Count:",5,100,value = c(5),step=5)
     ),
     
     # Show a plot 
@@ -95,7 +95,7 @@ server <- function(input,output){
     
     if(input$sel=="All"){
       
-      All_words %>% count(word, sort = TRUE) %>%
+      all_TopComments %>% count(word, sort = TRUE) %>%
         slice(1:input$ncount) %>%
         mutate(word = reorder(word, n)) %>%
         ggplot(aes(n, word)) + geom_col() +
@@ -107,9 +107,9 @@ server <- function(input,output){
     
     else{
       
-      all_wordsFilter <- all_words %>%filter(PLACEHOLDERCOLUMN==input$sel)
+      all_TopCommentsFilter <- all_TopComments %>%filter(SubReddit==input$sel)
       
-      All_wordsFilter %>% count(word, sort = TRUE) %>%
+      all_TopCommentsFilter %>% count(word, sort = TRUE) %>%
         slice(1:input$ncount) %>%
         mutate(word = reorder(word, n)) %>%
         ggplot(aes(n, word)) + geom_col() +
