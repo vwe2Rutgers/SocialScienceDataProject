@@ -11,17 +11,18 @@ ui <- fluidPage(
   
   sidebarLayout(
     
-    # Sidebar with a slider input
+    # Sidebar with a slider input and selectInput
     sidebarPanel(
       selectInput("sel","Genre:",choices=c("All","EDM","Rap","Indie","jazz")),
-      sliderInput("ncount","Count:",5,50,value = c(5),step=5)
+      sliderInput("ncount","Count:",5,100,value = c(5),step=5)
     ),
     
-    # Show a plot of the generated distribution
+    # Show a plot 
     mainPanel(
       textOutput("Genre"),
       plotOutput("sentiment_plot"),
-      plotOutput("comment_plot")
+      plotOutput("comment_plot"),
+      plotOutput("topComments")
       
       
   
@@ -88,6 +89,36 @@ server <- function(input,output){
   })
   
   
+  
+  
+  output$topComments <- renderPlot({
+    
+    if(input$sel=="All"){
+      
+      All_words %>% count(word, sort = TRUE) %>%
+        slice(1:input$ncount) %>%
+        mutate(word = reorder(word, n)) %>%
+        ggplot(aes(n, word)) + geom_col() +
+        labs(y = NULL, x='Term frequency', title=paste("Frequent terms in collected corpus"))
+      
+      
+    }
+    
+    
+    else{
+      
+      all_wordsFilter <- all_words %>%filter(PLACEHOLDERCOLUMN==input$sel)
+      
+      All_wordsFilter %>% count(word, sort = TRUE) %>%
+        slice(1:input$ncount) %>%
+        mutate(word = reorder(word, n)) %>%
+        ggplot(aes(n, word)) + geom_col() +
+        labs(y = NULL, x='Term frequency', title=paste("Frequent terms in subreddit corpus"))
+    
+      
+    }
+    
+     })
   
   
 }
