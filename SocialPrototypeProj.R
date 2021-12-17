@@ -37,19 +37,19 @@ all_genres <-bind_rows(Rapdataset,Countrydataset,EDMdataset)
 
 
 
-jazz_comments <- read.csv("C:/Users/HP/Downloads/jazz_comments.csv")
+#jazz_comments <- read.csv("C:/Users/HP/Downloads/jazz_comments.csv")
 
-indie_comments <- read.csv("C:/Users/HP/Downloads/indie_comments.csv")
+#indie_comments <- read.csv("C:/Users/HP/Downloads/indie_comments.csv")
 
-edm_comments < -read.csv("C:/Users/HP/Downloads/edm_comments.csv")
+#edm_comments < -read.csv("C:/Users/HP/Downloads/edm_comments.csv")
 
 
 N <-30000
 
 
-rap_comments <- read.csv("C:/Users/HP/Downloads/rap_comments.csv")
+#rap_comments <- read.csv("C:/Users/HP/Downloads/rap_comments.csv")
 
-rap_commentsSub <-sample_n(rap_comments,N)
+#rap_commentsSub <-sample_n(rap_comments,N)
 
 
 

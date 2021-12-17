@@ -1,0 +1,14 @@
+name: SocialScienceDataProject-RedditAPI-Vineet-Jess
+title: SocialScienceDataProject-RedditAPI-Vineet-Jess
+username:
+account: vwe2-vineetekka
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 5342489
+bundleId: 5385739
+url: https://vwe2-vineetekka.shinyapps.io/SocialScienceDataProject-RedditAPI-Vineet-Jess/
+when: 1639766902.75783
+lastSyncTime: 1639766902.75783
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: edmTrial2cs.csv|GeniusCreds.json|SpotifyCreds.json
