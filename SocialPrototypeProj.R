@@ -155,6 +155,36 @@ ggplot(EDMdataset,aes(x=SentimentGI)) +
 all_genres <-bind_rows(Rapdataset,jazzdataset,EDMdataset,Indiedataset)
 
 
+IndieControl <- bind_cols(sentimentIndie,indie_comments)
+
+plotSentimentResponse(IndieControl$SentimentGI,IndieControl$score,ylab = "Comment Score", smoothing = "lm")
+
+
+EDMControl <- bind_cols(sentimentEDM,edm_comments)
+plotSentimentResponse(EDMControl$SentimentGI,EDMControl$score,ylab = "Comment Score", smoothing = "lm")
+
+
+RapControl <- bind_cols(sentimentRap,rap_commentsSub)
+plotSentimentResponse(RapControl$SentimentGI,RapControl$score,ylab = "Comment Score", smoothing = "lm")
+
+
+JazzControl <- bind_cols(sentimentJazz,jazz_comments)
+plotSentimentResponse(JazzControl$SentimentGI,JazzControl$score,ylab = "Comment Score", smoothing = "lm")
+
+JazzControl2 <-bind_cols(jazz_comments,JazzControl)
+
+plotSentimentResponse(JazzControl2$SentimentGI,JazzControl2$score...6,ylab = "Comment Score", smoothing = "lm")
+
+IndieControl2 <- bind_cols(indie_comments,IndieControl)
+
+RapControl2 <- bind_cols(rap_commentsSub,RapControl)
+
+EDMControl2 <- bind_cols(edm_comments,EDMControl)
+
+all_genresComments <- bind_rows(RapControl2,EDMControl2,IndieControl2,JazzControl2)
+
+plotSentimentResponse(all_genresComments$SentimentGI,all_genresComments$score...6,ylab = "Comment Score", smoothing = "lm")
+
 
 
 

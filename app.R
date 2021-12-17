@@ -21,6 +21,7 @@ ui <- fluidPage(
     mainPanel(
       textOutput("Genre"),
       plotOutput("sentiment_plot"),
+      plotOutput("comment_plot")
       
       
   
@@ -65,6 +66,25 @@ server <- function(input,output){
        geom_histogram(binwidth = 0.05,color="#000000",alpha=0.5)
       
     }
+  })
+  
+  
+  output$comment_plot <- renderPlot({
+    
+    if(input$sel=="All"){
+      
+      plotSentimentResponse(all_genresComments$SentimentGI,all_genresComments$score...6,ylab = "Comment Score", smoothing = "lm")
+    }
+    
+    else{
+      
+      all_genresCommentsFilter <- all_genresComments %>% filter(SubReddit...2==input$sel)
+      plotSentimentResponse(all_genresCommentsFilter$SentimentGI,all_genresCommentsFilter$score...6,ylab = "Comment Score", smoothing = "lm")
+      
+    }
+    
+    
+    
   })
   
   
